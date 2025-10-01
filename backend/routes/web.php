@@ -45,6 +45,10 @@ Route::middleware('auth')->group(function () {
     // Registro de datos históricos (HU-03)
     Route::resource('historical_records', HistoricalRecordController::class);
 
+    // ✅ Carga masiva con Excel
+    Route::post('/historical_records/import', [HistoricalRecordController::class, 'importExcel'])
+        ->name('historical_records.import');
+
     // Predicciones y tablas (HU-04 y HU-05)
     Route::get('/predictions/create', [PredictionController::class, 'create'])->name('predictions.create');
     Route::post('/predictions', [PredictionController::class, 'store'])->name('predictions.predict');

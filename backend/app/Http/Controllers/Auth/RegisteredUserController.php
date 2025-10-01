@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth; // <- agregado
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Auth\Events\Registered;
 
@@ -14,35 +14,36 @@ class RegisteredUserController extends Controller
 {
     public function create()
     {
-        return view('auth.register'); // vista: resources/views/auth/register.blade.php
+        return view('auth.register'); // Vista: resources/views/auth/register.blade.php
     }
 
     public function store(Request $request)
     {
+        // Validación de acuerdo a la migración users
         $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'hotel_type' => 'required|in:Económico,3*,4*,5*',
             'rooms_number' => 'required|integer|min:1',
-            'phone' => 'nullable|string|max:20',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
+        // Creación del usuario
         $user = User::create([
             'name' => $request->name,
             'address' => $request->address,
-            'hotel_type' => $request->hotel_type,
             'rooms_number' => $request->rooms_number,
-            'phone' => $request->phone,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
+        // Dispara el evento de registro
         event(new Registered($user));
 
-        Auth::login($user); // <- inicia sesión automáticamente
+        // Inicia sesión automáticamente
+        Auth::login($user);
 
+        // Redirige al dashboard (o cualquier ruta que uses después del login)
         return redirect()->route('dashboard');
     }
 }

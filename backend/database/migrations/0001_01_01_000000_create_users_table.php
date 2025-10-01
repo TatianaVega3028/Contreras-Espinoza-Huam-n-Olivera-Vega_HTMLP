@@ -15,9 +15,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('hotel_type', ['Económico','3*','4*','5*'])->default('3*');
             $table->integer('rooms_number')->default(1);
-            $table->string('phone')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
